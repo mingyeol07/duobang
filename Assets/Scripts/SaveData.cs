@@ -2,18 +2,18 @@ using UnityEngine;
 
 public class SaveData
 {
-    public int PowerLevel;
-    public int HpLevel;
-    public int MovespeedLevel;
-    public int CriticalPercentLevel;
-    public int CriticalDamageLevel;
+    public int PowerLevel = 1;
+    public int HpLevel = 1;
+    public int MovespeedLevel =1;
+    public int CriticalPercentLevel =1;
+    public int CriticalDamageLevel = 1;
 
-    public int NormalAttackLevel;
-    public int Skill1Level;
-    public int Skill2Level;
+    public int NormalAttackLevel = 1;
+    public int Skill1Level = 0;
+    public int Skill2Level = 0;
 
     public int HaveCoin;
     public int HaveDiamond;
 
-    public int CurrentStage;
+    public int CurrentStage = 1;
 }

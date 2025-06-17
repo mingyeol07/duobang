@@ -16,7 +16,7 @@ MonoBehaviour:
   power: 310
   rewardAmount: 7
   type: 0
-  sprite: {fileID: 4723107735738678597, guid: c1cdd26cc09ad224884556bc4d8296ae, type: 3}
-  animator: {fileID: 9100000, guid: 983c6c7eda53e644d81462371582e08e, type: 2}
+  sprite: {fileID: 4723107735738678597, guid: 1018b0ba13578bf459bd254ae1a2be99, type: 3}
+  animator: {fileID: 22100000, guid: 026eebb4a3fda5049aeaeb315035b2cb, type: 2}
   hpMultipleAmount: 40
   powerMultipleAmount: 6

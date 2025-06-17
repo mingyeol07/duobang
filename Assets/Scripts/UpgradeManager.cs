@@ -9,11 +9,11 @@ public class UpgradeManager : MonoBehaviour
     private int haveCoin;
     private int haveDiamond;
 
-    private int powerLevel;
-    private int hpLevel;
-    private int movespeedLevel;
-    private int criticalPercentLevel;
-    private int criticalDamageLevel;
+    private int powerLevel =1;
+    private int hpLevel = 1;
+    private int movespeedLevel = 1;
+    private int criticalPercentLevel = 1;
+    private int criticalDamageLevel = 1;
 
     private const int powerMaxLevel = 100;
     private const int hpMaxLevel = 100;
@@ -51,13 +51,29 @@ public class UpgradeManager : MonoBehaviour
     private const int criticalPowerAmount = 5;
     private const float moveSpeedAmount = 0.2f;
 
-    private int normalAttackLevel;
-    private int skill1Level;
-    private int skill2Level;
+    private int normalAttackLevel = 1;
+    private int skill1Level = 0;
+    private int skill2Level = 0;
 
     private const int NormalAttackMaxLevel = 50;
     private const int Skill1MaxLevel = 30;
     private const int Skill2MaxLevel = 25;
+
+    private int normalAttackPrice = 2;
+    private int skill1Price = 10;
+    private int skill2Price = 15;
+
+    private const int normalAttackPriceMultipleAmount = 2;
+    private const int skill1PriceMultipleAmount = 3;
+    private const int skill2PriceMultipleAmount = 4;
+
+    private const float normalAttackDefaultAmount = 1.0f;
+    private const float skill1DefaultAmount = 5.0f;
+    private const int skill2DefaultAmount = 50;
+
+    private float normalAttackAmount = 0.1f;
+    private float skill1Amount = 0.5f;
+    private int skill2Amount = 2;
 
     private void Awake()
     {
@@ -110,15 +126,103 @@ public class UpgradeManager : MonoBehaviour
         PlayerManager.Instance.Player.InitCriticalPercent(criticalPercent);
 
         criticalPerPrice = criticalPerPriceDefault + (criticalPercentLevel * criticalPerPriceMultipleAmount);
-        criticalPercentPanel.Setup(criticalPercent, criticalPerAmount, criticalPerPrice, criticalPercentLevel);
+        criticalPercentPanel.Setup(criticalPercent, criticalPerAmount, criticalPerPrice, criticalPercentLevel, "%");
 
         int criticalDamage = criticalPowerDefault + criticalPowerAmount * criticalDamageLevel;
         PlayerManager.Instance.Player.InitCriticalDamage(criticalDamage);
 
         criticalPowerPrice = criticalPowerPriceDefault + (criticalDamageLevel * criticalPowerPriceMultipleAmount);
-        criticalDamagePanel.Setup(criticalDamage, criticalPowerAmount, criticalPowerPrice, criticalDamageLevel);
+        criticalDamagePanel.Setup(criticalDamage, criticalPowerAmount, criticalPowerPrice, criticalDamageLevel, "%");
 
         UIManager.Instance.InitCoinAndDiaText(haveCoin, haveDiamond);
+    }
+
+    public void InitPlayerSkill(AbilityPanel normalAttack, AbilityPanel skill1, AbilityPanel skill2)
+    {
+        float NormalAttackCoefficient = normalAttackDefaultAmount + normalAttackAmount * (normalAttackLevel - 1);
+        PlayerManager.Instance.Player.InitNormalAttack(NormalAttackCoefficient);
+
+        normalAttackPrice = normalAttackLevel * normalAttackPriceMultipleAmount;
+        normalAttack.Setup(NormalAttackCoefficient, normalAttackAmount, normalAttackPrice, normalAttackLevel, "X");
+
+        if(skill1Level != 0)
+        {
+            float skill1Coefficient = skill1DefaultAmount + skill1Amount * (skill1Level - 1);
+            PlayerManager.Instance.Player.InitSkill1(skill1Coefficient);
+
+            skill1Price = skill1Level * skill1PriceMultipleAmount;
+            skill1.Setup(skill1Coefficient, skill1Amount, skill1Price, skill1Level, "X");
+        }
+        else
+        {
+            skill1.Setup(0, 5.0f, 10, skill1Level, "X");
+        }
+
+        if (skill2Level != 0)
+        {
+            float skill2Coefficient = skill2DefaultAmount + skill2Amount * (skill2Level - 1);
+            PlayerManager.Instance.Player.InitSkill2(skill2Coefficient);
+
+            skill2Price = skill2Level * skill2PriceMultipleAmount;
+            skill2.Setup(skill2Coefficient, skill2Amount, skill2Price, skill2Level, "X");
+        }
+        else
+        {
+            skill2.Setup(0, 50.0f, 15, skill2Level, "X");
+        }
+    }
+
+    public bool TryUpgradeNormalAttack(AbilityPanel panel)
+    {
+        if (normalAttackLevel >= NormalAttackMaxLevel || haveDiamond < normalAttackPrice) return false;
+
+        normalAttackLevel++;
+        haveDiamond -= normalAttackPrice;
+        UIManager.Instance.InitCoinAndDiaText(haveCoin, haveDiamond);
+
+        float NormalAttackCoefficient = normalAttackDefaultAmount + normalAttackAmount * (normalAttackLevel - 1);
+        PlayerManager.Instance.Player.InitNormalAttack(NormalAttackCoefficient);
+
+        normalAttackPrice = normalAttackLevel * normalAttackPriceMultipleAmount;
+        panel.Setup(NormalAttackCoefficient, normalAttackAmount, normalAttackPrice, normalAttackLevel, "X");
+
+        return true;
+    }
+
+    public bool TryUpgradeSkill1(AbilityPanel panel)
+    {
+        if (skill1Level >= Skill1MaxLevel || haveDiamond < skill1Price) return false;
+
+        skill1Level++;
+        haveDiamond -= skill1Price;
+        UIManager.Instance.InitCoinAndDiaText(haveCoin, haveDiamond);
+
+        // 레벨이 1이면 기본값
+        float skill1Coefficient = skill1DefaultAmount + skill1Amount * (skill1Level - 1);
+        PlayerManager.Instance.Player.InitSkill1(skill1Coefficient);
+
+        skill1Price = skill1Level * skill1PriceMultipleAmount;
+        panel.Setup(skill1Coefficient, skill1Amount, skill1Price, skill1Level, "X");
+
+        return true;
+    }
+
+    public bool TryUpgradeSkill2(AbilityPanel panel)
+    {
+        if (skill2Level >= Skill2MaxLevel || haveDiamond < skill2Price) return false;
+
+        skill2Level++;
+        haveDiamond -= skill2Price;
+        UIManager.Instance.InitCoinAndDiaText(haveCoin, haveDiamond);
+
+        // 레벨이 1이면 기본값
+        float skill2Coefficient = skill2DefaultAmount + skill2Amount * (skill2Level - 1);
+        PlayerManager.Instance.Player.InitSkill2(skill2Coefficient);
+
+        skill2Price = skill2Level * skill2PriceMultipleAmount;
+        panel.Setup(skill2Coefficient, skill2Amount, skill2Price, skill2Level, "X");
+
+        return true;
     }
 
     public bool TryUpgradeHp(AbilityPanel panel)
@@ -184,7 +288,7 @@ public class UpgradeManager : MonoBehaviour
         UIManager.Instance.InitCoinAndDiaText(haveCoin, haveDiamond);
 
         criticalPerPrice = criticalPerPriceDefault + (criticalPercentLevel * criticalPerPriceMultipleAmount);
-        panel.Setup(criticalPercent, criticalPerAmount, criticalPerPrice, criticalPercentLevel);
+        panel.Setup(criticalPercent, criticalPerAmount, criticalPerPrice, criticalPercentLevel, "%");
 
         return true;
     }
@@ -201,7 +305,7 @@ public class UpgradeManager : MonoBehaviour
         UIManager.Instance.InitCoinAndDiaText(haveCoin, haveDiamond);
 
         criticalPowerPrice = criticalPowerPriceDefault + (criticalDamageLevel * criticalPowerPriceMultipleAmount);
-        panel.Setup(criticalDamage, criticalPowerAmount, criticalPowerPrice, criticalDamageLevel);
+        panel.Setup(criticalDamage, criticalPowerAmount, criticalPowerPrice, criticalDamageLevel, "%");
 
         return true;
     }

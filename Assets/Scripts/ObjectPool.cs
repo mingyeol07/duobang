@@ -4,6 +4,7 @@ using UnityEngine;
 public class ObjectPool<T> where T : MonoBehaviour
 {
     private Queue<T> pool = new Queue<T>();
+    public Queue<T> Pool => pool;
     private T prefab;
     private Transform parent;
 

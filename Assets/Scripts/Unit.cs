@@ -6,6 +6,9 @@ using UnityEngine.Rendering;
 public abstract class Unit : MonoBehaviour
 {
     protected int hp;
+    protected int maxHp;
+    public float HpPercent => (float)hp / (float)maxHp;
+
     protected int power;
 
     protected SpriteRenderer spriteRenderer;
@@ -18,14 +21,28 @@ public abstract class Unit : MonoBehaviour
     protected const string glowBlend = "_HitEffectBlend";
     protected const string hitEffectColor = "_HitEffectColor";
 
+    protected const string outLineColor = "_OutlineColor";
+    protected const string outLineWidth = "_OutlinePixelWidth";
+
     protected virtual void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
     }
 
+    public void SetOutLineWidth(int value)
+    {
+        spriteRenderer.material.SetFloat(outLineWidth, value);
+    }
+
+    public void SetOutLineColor(Color color)
+    {
+        spriteRenderer.material.SetColor(outLineColor, color);
+    }
+
     public virtual void Hit(int damage, bool isCritical = false)
     {
+        Camera.main.GetComponent<MoveCamera>().Shake(0.1f, 0.1f);
         UIManager.Instance.SpawnDamageText(this, damage, isCritical);
         // UIManager.In 
 

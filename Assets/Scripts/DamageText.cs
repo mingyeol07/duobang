@@ -15,7 +15,15 @@ public class DamageText : MonoBehaviour
         // 월드 캔버스 기준으로 바로 위치 설정
         transform.position = worldPos + Vector3.up * 0.6f; // 캐릭터 머리 위쪽에 위치
 
-        text.text = damage.ToString();
+        if (isCritical)
+        {
+            text.text = damage.ToString() + "!!";
+        }
+        else
+        {
+            text.text = damage.ToString();
+        }
+
         text.color = fadeColor;
         text.transform.localPosition = new Vector3(0, -0.3f, 0);
 

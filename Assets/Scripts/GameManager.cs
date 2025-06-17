@@ -16,8 +16,11 @@ public class GameManager : MonoBehaviour
         UpgradeManager.Instance.InitAbilityLevel(saveData.HpLevel, saveData.PowerLevel, saveData.MovespeedLevel, saveData.CriticalPercentLevel, saveData.CriticalDamageLevel);
         UpgradeManager.Instance.InitCoinAndDiamond(saveData.HaveCoin, saveData.HaveDiamond);
         UpgradeManager.Instance.InitSkillLevel(saveData.NormalAttackLevel, saveData.Skill1Level, saveData.Skill2Level);
-
         StageManager.Instance.InitStage(saveData.CurrentStage);
         UIManager.Instance.InitStatAndPanel();
+
+        JsonSaveLoader.Save(saveData);
+
+
     }
 }

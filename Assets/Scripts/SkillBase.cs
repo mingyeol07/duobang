@@ -1,25 +1,36 @@
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
-public class SkillBase : MonoBehaviour
+public abstract class SkillBase
 {
-
-
-    private float curCool;
+    protected float curCool = 0;
     private float maxCool;
 
-    public void UpdateLogic()
+    protected float damageCoefficient;
+    protected Player player;
+
+    public void InitDamageCoefficient(float value)
     {
-        curCool += Time.deltaTime;
+        damageCoefficient = value;
+    }
+
+    public SkillBase(float maxCool, Player player)
+    {
+        this.maxCool = maxCool;
+        this.player = player;
+    }
+
+    public virtual void UpdateLogic()
+    {
         if (curCool > maxCool)
         {
-            curCool = 0;
-            // 플레이어 큐에 넣기
-
+            PlayerManager.Instance.Player.AddSkillAtQueue(this);
+        }
+        else
+        {
+            curCool += Time.deltaTime;
         }
     }
 
-    public void Action()
-    {
-
-    }
+    public abstract void Action();
 }

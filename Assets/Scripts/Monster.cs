@@ -1,7 +1,9 @@
 using DG.Tweening;
+using NUnit.Framework.Constraints;
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.Threading;
 using UnityEngine;
 
 public enum MonsterType
@@ -13,9 +15,9 @@ public enum MonsterType
 public class Monster : Unit
 {
     private int reward;
-    private float attackDistance = 1.5f;
+    private float attackDistance = 2f;
 
-    private WaitForSeconds attackWaitTime = new WaitForSeconds(2);
+    private WaitForSeconds attackWaitTime = new WaitForSeconds(1);
 
     private bool isHited;
     private MonsterType type;
@@ -35,13 +37,21 @@ public class Monster : Unit
 
     public void Setup(Sprite sprite, RuntimeAnimatorController animator, int hp, int power, int reward, MonsterType type, float spawnPosX)
     {
-        this.hp = hp;
+        this.maxHp = hp;
+        this.hp = maxHp;
         this.power = power;
         this.reward = reward;
 
         this.animator.runtimeAnimatorController = animator;
         this.type = type;
 
+        if (type == MonsterType.Boss)
+        {
+            transform.localScale = Vector3.one * 2;
+            transform.position = new Vector2(transform.position.x, 2.7625f);
+            SetOutLineColor(Color.red);
+            SetOutLineWidth(1);
+        }
         spriteRenderer.sprite = sprite;
 
         transform.position = new Vector2(spawnPosX, transform.position.y);
@@ -54,6 +64,7 @@ public class Monster : Unit
             isHited = true;
             StartCoroutine(Co_AttackCycle());
         }
+        SoundManager.Instance.PlaySFX(SoundName.MonsterHit);
         base.Hit(damage, isCritical);
     }
 
@@ -63,12 +74,13 @@ public class Monster : Unit
         {
             yield return attackWaitTime;
 
-            if (!isHited)
+            if (isDead)
             {
                 yield break;
             }
 
             animator.SetTrigger(hashAttack);
+            yield return new WaitForSeconds(animator.GetCurrentAnimatorClipInfo(0).Length);
         }
     }
 
@@ -88,6 +100,7 @@ public class Monster : Unit
         isHited = false;
         boxCollider.enabled = false;
         PlayerManager.Instance.Player.ResetTarget();
+
 
         if (type == MonsterType.Boss)
         {
@@ -118,6 +131,7 @@ public class Monster : Unit
         yield return new WaitForSeconds(deathWaitTime);
 
         StageManager.Instance.MonsterPool.Return(this);
+        StageManager.Instance.TryClearStage();
 
         // 다시 생성될 때를 위한 후처리
         isDead = false;
@@ -126,5 +140,9 @@ public class Monster : Unit
         spriteRenderer.DOFade(1, 0);
         spriteRenderer.material.SetFloat(glowBlend, 0);
         spriteRenderer.material.SetColor(hitEffectColor, Color.white);
+
+        transform.position = new Vector2(transform.position.x, 1.9625f);
+        transform.localScale = Vector3.one;
+        SetOutLineWidth(0);
     }
 }

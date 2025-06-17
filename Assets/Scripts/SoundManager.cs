@@ -14,15 +14,15 @@ public class SoundManager : MonoBehaviour
 {
     public static SoundManager Instance { get; private set; }
 
-    public Sound[] bgmSounds;
-    public Sound[] sfxSound;
+    [SerializeField] private Sound[] bgmSounds;
+    [SerializeField] private Sound[] sfxSounds;
 
-    public AudioSource bgmSource;
-    public AudioSource sfxSource;
+    [SerializeField] private AudioSource bgmSource;
+    [SerializeField] private AudioSource sfxSource;
 
-    public AudioMixer mixer;
-    public Slider bgmSlider;
-    public Slider sfxSlider;
+    [SerializeField] private AudioMixer mixer;
+    [SerializeField] private Slider bgmSlider;
+    [SerializeField] private Slider sfxSlider;
 
     private const string mixserMaster = "Master";
     private const string mixerBGM = "BGM";
@@ -41,7 +41,60 @@ public class SoundManager : MonoBehaviour
         bgmSlider.value = 0;
         sfxSlider.value = 0;
 
-        //bgmSlider.onValueChanged.AddListener(SetMusicVolume);
-        //sfxSlider.onValueChanged.AddListener(SetSFXVolume);
+        bgmSlider.onValueChanged.AddListener(SetBGMVolume);
+        sfxSlider.onValueChanged.AddListener(SetSFXVolume);
+    }
+
+    void SetBGMVolume(float value)
+    {
+        if (value == -40)
+        {
+            mixer.SetFloat(mixerBGM, -80);
+        }
+        else
+        {
+            mixer.SetFloat(mixerBGM, value);
+        }
+    }
+
+    void SetSFXVolume(float value)
+    {
+        if (value == -40)
+        {
+            mixer.SetFloat(mixerSFX, -80);
+        }
+        else
+        {
+            mixer.SetFloat(mixerSFX, value);
+        }
+    }
+
+    public void PlayBGM(string name)
+    {
+        Sound sound = Array.Find(bgmSounds, x => x.name == name);
+
+        if (sound == null)
+        {
+            Debug.Log("Sound Not Found");
+        }
+        else
+        {
+            bgmSource.clip = sound.clip;
+            bgmSource.Play();
+        }
+    }
+
+    public void PlaySFX(string name)
+    {
+        Sound sound = Array.Find(sfxSounds, x => x.name == name);
+
+        if (sound == null)
+        {
+            Debug.Log("Sound Not Found");
+        }
+        else
+        {
+            sfxSource.PlayOneShot(sound.clip);
+        }
     }
 }
