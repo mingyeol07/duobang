@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -30,6 +31,11 @@ public class StageManager : MonoBehaviour
     private void Start()
     {
         ClearStage();
+    }
+
+    public void InitStage(int stageNumber)
+    {
+        curStage = stageNumber;
     }
 
     // 플레이어가 몬스터를 다 지우면 넥스트 스테이지를 불러옴
@@ -69,6 +75,7 @@ public class StageManager : MonoBehaviour
         }
 
         spawnPosX = spawnStartX;
+
         for (int i = 0; i < 15; i++)
         {
             SpawnNormal(stageMonsterData);
@@ -114,7 +121,8 @@ public class StageManager : MonoBehaviour
         int power = stageMonsterData.Power + curStage * stageMonsterData.PowerMultipleAmount;
         int reward = curStage * stageMonsterData.RewardAmount;
 
-        spawnPosX += spawnPosMinDistance + Random.Range(0, 2f);
+        // 위치 확정 후 몬스터 생성
+        spawnPosX = Random.Range(spawnStartX, 30f);
 
         MonsterType type = MonsterType.Normal;
 

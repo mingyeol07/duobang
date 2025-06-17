@@ -9,12 +9,6 @@ public class Player : Unit
     private int criticalPower = 50;
     private float moveSpeed = 1.0f;
 
-    private const int hpAmount = 100;
-    private const int powerAmount = 100;
-    private const int criticalPerAmount = 1;
-    private const int criticalPowerAmount = 5;
-    private const float moveSpeedAmount = 0.2f;
-
     private float attackWaitTime = 1f;
 
     private Monster targetMonster;
@@ -30,8 +24,6 @@ public class Player : Unit
     protected override void Awake()
     {
         base.Awake();
-        hp = 500;
-        power = 50;
     }
 
     private void Update()
@@ -65,7 +57,7 @@ public class Player : Unit
         transform.Translate(Vector2.right * moveSpeed * Time.deltaTime);
 
         RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 1f);
-        if(hit)
+        if (hit)
         {
             targetMonster = hit.collider.gameObject.GetComponent<Monster>();
         }
@@ -90,7 +82,7 @@ public class Player : Unit
 
         int ran = Random.Range(0, 100);
 
-        if(ran < criticalPer)
+        if (ran < criticalPer)
         {
             targetMonster.Hit(power + power * (criticalPower / 100), true);
         }
@@ -98,9 +90,12 @@ public class Player : Unit
         {
             targetMonster.Hit(power, false);
         }
-        
+
         // 다음 공격을 할 지 결정
-        if (targetMonster == null) return;
+        if (targetMonster == null)
+        {
+            return;
+        }
 
         // 첫번 째 공격을 하고 난 뒤라면
         if (isAttackedFirst)
@@ -109,7 +104,7 @@ public class Player : Unit
             animator.SetTrigger(hashAttack2);
         }
         else
-        { 
+        {
             // 두번 째 공격을 하고 다시 돌기
             StartCoroutine(AttackReCycle());
         }
@@ -130,28 +125,28 @@ public class Player : Unit
         targetMonster = null;
     }
 
-    public void UpgradeHp()
+    public void InitHp(int value)
     {
-        hp += hpAmount;
+        hp = value;
     }
 
-    public void UpgradePower()
+    public void InitPower(int value)
     {
-        power += powerAmount;
+        power = value;
     }
 
-    public void UpgradeMoveSpeed()
+    public void InitMovespeed(float value)
     {
-        moveSpeed += moveSpeedAmount;
+        moveSpeed = value;
     }
 
-    public void UpgradeCriticalPer()
+    public void InitCriticalPercent(int value)
     {
-        criticalPer += criticalPerAmount;
+        criticalPer = value;
     }
 
-    public void UpgradeCriticalPower()
+    public void InitCriticalDamage(int value)
     {
-        criticalPower += criticalPowerAmount;
+        criticalPower = value;
     }
 }
