@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem.UI;
 
@@ -21,6 +22,9 @@ public class Player : Unit
     private bool isAttackedFirst = false;
     private bool isDead = false;
 
+    private Queue<SkillBase> skillQueue;
+    private List<SkillBase> skillList;
+
     protected override void Awake()
     {
         base.Awake();
@@ -29,6 +33,11 @@ public class Player : Unit
     private void Update()
     {
         if (isDead) return;
+
+        for (int i = 0; i < skillList.Count; i++)
+        {
+            skillList[i].UpdateLogic();
+        }
 
         if (targetMonster == null)
         {
@@ -39,6 +48,13 @@ public class Player : Unit
             if (!isAttacked)
             {
                 isAttacked = true;
+                // 타겟이 죽을 때까지 공격중인 상태는 끝나지 않음
+
+                if (skillQueue.Count > 0)
+                {
+                    SkillBase skill = skillQueue.Dequeue();
+                    skill.Action();
+                }
                 isAttackedFirst = true;
                 animator.SetTrigger(hashAttack);
             }
