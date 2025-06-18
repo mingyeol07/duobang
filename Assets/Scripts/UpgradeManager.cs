@@ -80,16 +80,39 @@ public class UpgradeManager : MonoBehaviour
         Instance = this;
     }
 
+    public void SaveData()
+    {
+        SaveData data = GameManager.Instance.SaveData;
+
+        data.CriticalDamageLevel = criticalDamageLevel;
+        data.CriticalPercentLevel = criticalPercentLevel;
+
+        data.MovespeedLevel = movespeedLevel;
+        data.HpLevel = hpLevel;
+        data.PowerLevel = powerLevel;
+
+        data.HaveCoin = haveCoin;
+        data.HaveDiamond = haveDiamond;
+
+        data.NormalAttackLevel = normalAttackLevel;
+        data.Skill1Level = skill1Level;
+        data.Skill2Level = skill2Level;
+    } 
+
     public void GetCoins(int value)
     {
         haveCoin += value;
         UIManager.Instance.InitCoinAndDiaText(haveCoin, haveDiamond);
+
+        GameManager.Instance.OnChangedData();
     }
 
     public void GetDiamonds(int value)
     {
         haveDiamond += value;
         UIManager.Instance.InitCoinAndDiaText(haveCoin, haveDiamond);
+
+        GameManager.Instance.OnChangedData();
     }
 
     public void InitCoinAndDiamond(int coins, int diamonds)

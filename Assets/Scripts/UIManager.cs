@@ -75,48 +75,64 @@ public class UIManager : MonoBehaviour
         {
             UpgradeManager.Instance.TryUpgradeHp(hpPanel);
             SoundManager.Instance.PlaySFX(SoundName.ButtonUp);
+
+            GameManager.Instance.OnChangedData();
         });
 
         powerUpButton.onClick.AddListener(() =>
         {
             UpgradeManager.Instance.TryUpgradePower(powerPanel);
             SoundManager.Instance.PlaySFX(SoundName.ButtonUp);
+
+            GameManager.Instance.OnChangedData();
         });
 
         moveSpeedUpButton.onClick.AddListener(() =>
         {
             UpgradeManager.Instance.TryUpgradeMovespeed(movespeedPanel);
             SoundManager.Instance.PlaySFX(SoundName.ButtonUp);
+
+            GameManager.Instance.OnChangedData();
         });
 
         criticalPerUpButton.onClick.AddListener(() =>
         {
             UpgradeManager.Instance.TryUpgradeCriticalPercent(criticalPerPanel);
             SoundManager.Instance.PlaySFX(SoundName.ButtonUp);
+
+            GameManager.Instance.OnChangedData();
         });
 
         criticalDamageUpButton.onClick.AddListener(() =>
         {
             UpgradeManager.Instance.TryUpgradeCriticalDamage(criticalDamagePanel);
             SoundManager.Instance.PlaySFX(SoundName.ButtonUp);
+
+            GameManager.Instance.OnChangedData();
         });
 
         normalAttackButton.onClick.AddListener(() =>
         {
             UpgradeManager.Instance.TryUpgradeNormalAttack(normalAttackPanel);
             SoundManager.Instance.PlaySFX(SoundName.ButtonUp);
+
+            GameManager.Instance.OnChangedData();
         });
 
         skill1Button.onClick.AddListener(() =>
         {
             UpgradeManager.Instance.TryUpgradeSkill1(skill1Panel);
             SoundManager.Instance.PlaySFX(SoundName.ButtonUp);
+
+            GameManager.Instance.OnChangedData();
         });
 
         skill2Button.onClick.AddListener(() =>
         {
             UpgradeManager.Instance.TryUpgradeSkill2(skill2Panel);
             SoundManager.Instance.PlaySFX(SoundName.ButtonUp);
+
+            GameManager.Instance.OnChangedData();
         });
 
         bossButton.onClick.AddListener(() =>

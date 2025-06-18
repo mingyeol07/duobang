@@ -83,6 +83,7 @@ public class StageManager : MonoBehaviour
             if(mon.gameObject.activeSelf)
             {
                 monsterPool.Return(mon);
+                mon.Return();
             }
         }
 
@@ -92,6 +93,8 @@ public class StageManager : MonoBehaviour
             PlayerManager.Instance.Player.Respawn(-3f);
             SpawnMonsters();
         });
+
+        GameManager.Instance.OnChangedData();
     }
 
     // 마주했었는데 토벌 실패한 보스를 바로 도전할 때 보스스테이지 이동
@@ -200,8 +203,10 @@ public class StageManager : MonoBehaviour
         spawnedMonsters.Enqueue(monster);
     }
 
-    private void SaveStage()
+    public void SaveStage()
     {
+        SaveData data = GameManager.Instance.SaveData;
 
+        data.CurrentStage = curStage;
     }
 }

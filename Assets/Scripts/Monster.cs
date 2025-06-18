@@ -126,15 +126,11 @@ public class Monster : Unit
         StartCoroutine(Co_ReturnPool());
     }
 
-    IEnumerator Co_ReturnPool()
+    public void Return()
     {
-        yield return new WaitForSeconds(deathWaitTime);
-
-        StageManager.Instance.MonsterPool.Return(this);
-        StageManager.Instance.TryClearStage();
-
-        // 다시 생성될 때를 위한 후처리
         isDead = false;
+        isHited = false;
+
         boxCollider.enabled = true;
         animator.SetTrigger(hashRespawn);
         spriteRenderer.DOFade(1, 0);
@@ -144,5 +140,16 @@ public class Monster : Unit
         transform.position = new Vector2(transform.position.x, 1.9625f);
         transform.localScale = Vector3.one;
         SetOutLineWidth(0);
+    }
+
+    IEnumerator Co_ReturnPool()
+    {
+        yield return new WaitForSeconds(deathWaitTime);
+
+        StageManager.Instance.MonsterPool.Return(this);
+        StageManager.Instance.TryClearStage();
+
+        // 다시 생성될 때를 위한 후처리
+        Return();
     }
 }
