@@ -8,7 +8,28 @@ public class DamageText : MonoBehaviour
     [SerializeField] private TMP_Text text;
     private const float speed = 0.5f;
     private Color fadeColor = new Color(1, 1, 1, 0);
-    private WaitForSeconds hideWaitTime = new WaitForSeconds(2f);
+    private WaitForSeconds hideWaitTime = new WaitForSeconds(1f);
+
+    public void Show(Vector3 worldPos, string str, Color color)
+    {
+        // 월드 캔버스 기준으로 바로 위치 설정
+        transform.position = worldPos + Vector3.up * 0.6f; // 캐릭터 머리 위쪽에 위치
+
+        text.text = str;
+        text.fontSize = 0.25f;
+
+        text.color = fadeColor * color;
+        text.transform.localPosition = new Vector3(0, -0.3f, 0);
+
+        transform.DOKill();
+        text.transform.DOKill();
+
+        // 월드 좌표 기준으로 위로 부드럽게 이동하면서 페이드 인
+        text.DOFade(1f, speed).SetId(this);
+        text.transform.DOLocalMoveY(0, 0.5f).SetId(this); // 월드 Y축 기준으로 올라감
+
+        StartCoroutine(Co_Hide());
+    }
 
     public void Show(Vector3 worldPos, int damage, bool isCritical)
     {
@@ -23,6 +44,8 @@ public class DamageText : MonoBehaviour
         {
             text.text = damage.ToString();
         }
+
+        text.fontSize = 0.5f;
 
         text.color = fadeColor;
         text.transform.localPosition = new Vector3(0, -0.3f, 0);

@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using Unity.VisualScripting;
-using UnityEditor.Overlays;
 using UnityEngine;
 
 public class StageManager : MonoBehaviour
@@ -14,6 +12,8 @@ public class StageManager : MonoBehaviour
     [SerializeField] private Monster monsterBasePrefab;
 
     private int curStage = 0;
+    private int lastBossStage = 0;
+
     private const float spawnPosMinDistance = 1;
     private const float spawnStartX = 7;
     private List<float> spawnPositions = new List<float>();
@@ -54,10 +54,41 @@ public class StageManager : MonoBehaviour
         LoadStage();
     }
 
+    public void DieLoad()
+    {
+        if (curStage % 5 == 0)
+        {
+            lastBossStage = curStage;
+            curStage -= 4;
+
+            UIManager.Instance.Fade(() =>
+            {
+                UIManager.Instance.ClearStage(curStage);
+                PlayerManager.Instance.Player.Respawn(-3f);
+                SpawnMonsters();
+                UIManager.Instance.ShowBossButton(lastBossStage);
+            });
+        }
+        else
+        {
+            LoadStage();
+        }
+    }
+
     public void LoadStage()
     {
+        while(spawnedMonsters.Count > 0)
+        {
+            Monster mon = spawnedMonsters.Dequeue();
+            if(mon.gameObject.activeSelf)
+            {
+                monsterPool.Return(mon);
+            }
+        }
+
         UIManager.Instance.Fade(() =>
         {
+            UIManager.Instance.ClearStage(curStage);
             PlayerManager.Instance.Player.Respawn(-3f);
             SpawnMonsters();
         });
@@ -66,7 +97,8 @@ public class StageManager : MonoBehaviour
     // 마주했었는데 토벌 실패한 보스를 바로 도전할 때 보스스테이지 이동
     public void ChallangeBoss()
     {
-
+        curStage = lastBossStage;
+        LoadStage();
     }
 
     private void SpawnMonsters()
@@ -112,6 +144,7 @@ public class StageManager : MonoBehaviour
         }
         if (curStage % 5 == 0)
         {
+            lastBossStage = curStage;
             SpawnBoss(stageMonsterData);
         }
     }
@@ -138,6 +171,8 @@ public class StageManager : MonoBehaviour
             type,
             13
         );
+
+        spawnedMonsters.Enqueue(monster);
     }
 
     private void SpawnNormal(MonsterData stageMonsterData, float spawnPosX)
@@ -161,6 +196,8 @@ public class StageManager : MonoBehaviour
             type,
             spawnPosX
         );
+
+        spawnedMonsters.Enqueue(monster);
     }
 
     private void SaveStage()

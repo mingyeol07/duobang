@@ -80,6 +80,18 @@ public class UpgradeManager : MonoBehaviour
         Instance = this;
     }
 
+    public void GetCoins(int value)
+    {
+        haveCoin += value;
+        UIManager.Instance.InitCoinAndDiaText(haveCoin, haveDiamond);
+    }
+
+    public void GetDiamonds(int value)
+    {
+        haveDiamond += value;
+        UIManager.Instance.InitCoinAndDiaText(haveCoin, haveDiamond);
+    }
+
     public void InitCoinAndDiamond(int coins, int diamonds)
     {
         haveCoin = coins;

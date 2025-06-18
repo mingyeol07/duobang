@@ -17,6 +17,7 @@ public class Player : Unit
     private float attackWaitTime = 1f;
 
     private Monster targetMonster;
+    public Monster TargetMonster => targetMonster;
 
     private readonly int hashAttack2 = Animator.StringToHash("Attack2");
     private readonly int hashIdle = Animator.StringToHash("Idle");
@@ -220,6 +221,8 @@ public class Player : Unit
         // 뒤로 밀려나면서 죽음
         animator.SetTrigger(hashDeath);
         transform.DOMoveX(transform.position.x - 2, 0.5f).SetEase(Ease.InOutQuad);
+
+        StageManager.Instance.DieLoad();
     }
 
     public void ResetTarget()

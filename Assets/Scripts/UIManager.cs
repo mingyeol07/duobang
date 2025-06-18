@@ -25,6 +25,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private Sprite selectedButtonSprite;
     [SerializeField] private Sprite unSelectedButtonSprite;
 
+    [SerializeField] private Button bossButton;
+    [SerializeField] private TMP_Text bossButtonText;
+
+    [SerializeField] private TMP_Text nowStageText;
+
+    [SerializeField] private Image playerHpFill;
+    [SerializeField] private Image targetHpFill;
+
+    [SerializeField] private TMP_Text playerHpText;
+    [SerializeField] private TMP_Text targetHpText;
+
     [Header("Ability")]
     [SerializeField] private Button abilityButton;
     [SerializeField] private GameObject abilityTab;
@@ -108,6 +119,12 @@ public class UIManager : MonoBehaviour
             SoundManager.Instance.PlaySFX(SoundName.ButtonUp);
         });
 
+        bossButton.onClick.AddListener(() =>
+        {
+            StageManager.Instance.ChallangeBoss();
+            bossButton.gameObject.SetActive(false);
+        });
+
         abilityButton.onClick.AddListener(() =>
         {
             skillTab.SetActive(false);
@@ -125,6 +142,30 @@ public class UIManager : MonoBehaviour
             abilityButton.image.sprite = unSelectedButtonSprite;
             SoundManager.Instance.PlaySFX(SoundName.ButtonUp);
         });
+    }
+
+    private void Update()
+    {
+        playerHpFill.fillAmount = PlayerManager.Instance.Player.HpPercent;
+        playerHpText.text = PlayerManager.Instance.Player.Hp + " / " + PlayerManager.Instance.Player.MaxHp;
+
+        if (PlayerManager.Instance.Player.TargetMonster != null)
+        {
+            targetHpFill.fillAmount = PlayerManager.Instance.Player.TargetMonster.HpPercent;
+            targetHpText.text = PlayerManager.Instance.Player.TargetMonster.Hp + " / " + PlayerManager.Instance.Player.TargetMonster.MaxHp;
+        }
+        else
+        {
+            targetHpFill.fillAmount = 0;
+            targetHpText.text = "-";
+        }
+    }
+
+    public void ShowBossButton(int lastBossStage)
+    {
+        bossButton.gameObject.SetActive(true);
+
+        bossButtonText.text = "보스 도전" + "\n" + "스테이지: " + lastBossStage;
     }
 
     public void Fade(Action action)
@@ -169,9 +210,16 @@ public class UIManager : MonoBehaviour
             prevDamages.Add(damageText);
         }
     }
-    // 똥
-    public void ClearStage()
+
+    public void SpawnGetText(Vector2 pos, int value, Color color)
     {
+        DamageText damageText = damageTextPool.Get();
+        damageText.Show(pos, "+" + value, color);
+    }
+    // 똥
+    public void ClearStage(int curStage)
+    {
+        nowStageText.text = "스테이지: " + curStage.ToString();
         damageTextDict.Clear();
     }
 }

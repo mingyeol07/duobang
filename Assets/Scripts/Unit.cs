@@ -7,6 +7,9 @@ public abstract class Unit : MonoBehaviour
 {
     protected int hp;
     protected int maxHp;
+
+    public int Hp => hp;
+    public int MaxHp => maxHp;
     public float HpPercent => (float)hp / (float)maxHp;
 
     protected int power;

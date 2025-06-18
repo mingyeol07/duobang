@@ -101,14 +101,14 @@ public class Monster : Unit
         boxCollider.enabled = false;
         PlayerManager.Instance.Player.ResetTarget();
 
-
         if (type == MonsterType.Boss)
         {
             // 스테이지에게 보스 클리어를 알림
-            // 다이아 획득
+            DropItemManager.Instance.DropDiamonds(reward, transform.position);
         }
         else
         {
+            DropItemManager.Instance.DropCoins(reward, transform.position);
             // 골드 획득
         }
 
